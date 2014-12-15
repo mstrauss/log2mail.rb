@@ -4,6 +4,7 @@ log2mail.rb Installation
 Requirements
 ------------
 
+* Linux
 * Ruby 1.9.3
 
 Debian 7 (and higher)
@@ -25,6 +26,7 @@ Create a configuration file, e.g. at `/usr/local/etc/log2mail.conf`:
 
     cat > /usr/local/etc/log2mail.conf <<EOF
     defaults
+      sendmail = /usr/sbin/sendmail
       mailto = your@mail.address
     file = /tmp/test.log
       pattern = test

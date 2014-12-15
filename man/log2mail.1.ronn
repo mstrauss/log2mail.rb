@@ -9,7 +9,7 @@ log2mail.rb(1) -- monitors (log) files for patterns and reports hits by mail
 
 `log2mail.rb` helps having an eye on your systems' log files.  It efficiently monitors multiple files and reports as soon as specified (regular expression) patterns match.
 
-On startup, `log2mail.rb` opens all files on the 'watch list' and seeks to EOF.  All new data are parsed about once a minute (see `--sleeptime`). <!-- If necessary, i.e. when multiline patterns are set for the file, every new data is put into a fixed-size buffer.  The buffer is rolled over when it gets full. --> Matched patterns are reported to the configured mail address(es) (see `mailto` configuration option).
+On startup, `log2mail.rb` opens all files on the 'watch list' and seeks to EOF.  All new data are parsed about once a minute (see `--sleeptime`). Matched patterns are reported to the configured mail address(es) (see `mailto` configuration option).
 
 Log files are reopened automatically when rotated.
 
