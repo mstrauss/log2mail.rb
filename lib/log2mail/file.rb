@@ -54,7 +54,7 @@ module Log2mail
     def read_to_end
       return unless @f
       s = @f.gets(nil)
-      @size += s.length
+      @size += s.length if s
       s
     end
 
