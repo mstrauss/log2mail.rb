@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = Log2mail::AUTHOR_MAIL
   spec.summary       = %q{monitors (log) files for patterns and reports hits by mail}
   spec.description   = %q{A regular expression based log file monitoring tool.}
-  spec.homepage      = 'https://github.com/mstrauss/ruby-log2mail/'
+  spec.homepage      = 'https://github.com/mstrauss/log2mail.rb/'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
