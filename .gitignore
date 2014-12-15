@@ -12,3 +12,8 @@
 *.o
 *.a
 mkmf.log
+/example/
+*.gem
+*.log
+/man/*.html
+/bin/rake

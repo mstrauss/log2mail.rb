@@ -1,0 +1,7 @@
+# old-style syntax
+defaults
+  mailto   = recipient@test.itstrauss.eu
+  fromaddr = log2mail
+file = test.log
+  pattern = string pattern
+  pattern = /regexp pattern/

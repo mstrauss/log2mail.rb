@@ -1,0 +1,121 @@
+.\" generated with Ronn/v0.7.3
+.\" http://github.com/rtomayko/ronn/tree/0.7.3
+.
+.TH "LOG2MAIL\.RB" "1" "December 2014" "" ""
+.
+.SH "NAME"
+\fBlog2mail\.rb\fR \- monitors (log) files for patterns and reports hits by mail
+.
+.SH "SYNOPSIS"
+\fBlog2mail\.rb\fR (start|stop|status|configtest) [\fIoptions\fR]:
+.
+.SH "DESCRIPTION"
+\fBlog2mail\.rb\fR helps having an eye on your systems\' log files\. It efficiently monitors multiple files and reports as soon as specified (regular expression) patterns match\.
+.
+.P
+On startup, \fBlog2mail\.rb\fR opens all files on the \'watch list\' and seeks to EOF\. All new data are parsed about once a minute (see \fB\-\-sleeptime\fR)\.  Matched patterns are reported to the configured mail address(es) (see \fBmailto\fR configuration option)\.
+.
+.P
+Log files are reopened automatically when rotated\.
+.
+.P
+\fBlog2mail\.rb\fR is a pure ruby clone of log2mail \fIhttps://packages\.debian\.org/squeeze/log2mail\fR which supports most of the original\'s features and configuration syntax and adds multiline regular expression matching\. Actually it should be possible to use \fBlog2mail\.rb\fR with your existing configuration you may have for log2mail(8)\.
+.
+.SH "OPTIONS"
+.
+.TP
+\fB\-\-config\fR=\fIpath\fR, \fB\-c\fR \fIpath\fR
+Specifies the configuration file or directory path\. If \fIpath\fR is a directory, all files (except such ending in \fB~\fR or \fB#\fR) are parsed in sorted order\. Sorting is by character code, i\.e\. 0\-9 before A\-Z followed by a\-z\. Default value: \fB/etc/log2mail/conf\fR\. This can also be set by environment variable \fBLOG2MAIL_CONF\fR\.
+.
+.TP
+\fB\-\-sleeptime\fR=\fIseconds\fR
+Specifies at which interval (in seconds) the log files are parsed\. Default value: 60\.
+.
+.SH "ENVIRONMENT"
+\fBlog2mail\.rb\fR uses the environment variable \fBLOG2MAIL_CONF\fR, if present (see option \fB\-\-config\fR)\. The value supplied by option takes precedence\.
+.
+.SH "CONFIGURATION (OLD\-STYLE)"
+The old\-style configuration syntax is directly cloned from log2mail(8)\'s behavior and should be mostly compatible\. It may seem a bit awkward first, but this is how it works: There are two possible top\-level \'sections\', \fBdefaults\fR and \fBfile=\fR\fIpath\-to\-log\-file\fR sections\. The only statement allowed after a \fBfile=\.\.\.\fR section are one or more \fBpattern=\fR\fIpattern\fR entries\. After the \fBpattern=\.\.\.\fR there may be one or more \fBmailto=\fR\fIsingle\-mail\-recipient\fR entries\. After each \fBmailto=\.\.\.\fR there may be options for that recipient\. Also, these options are set from the special \fBdefaults\fR section, if present (usually it is)\.
+.
+.P
+The basic layout looks like follows:
+.
+.IP "" 4
+.
+.nf
+
+# comments start with pound sign (aka hash or number sign)
+
+defaults
+  fromaddr   = DEFAULT FROMADDR
+  sendtime   = DEFAULT SENDTIME   # seconds
+  resendtime = DEFAULT RESENDTIME # seconds
+  maxlines   = DEFAULT MAXLINES   # number of lines
+  template   = DEFAULT TEMPLATE   # filename or path
+  sendmail   = DEFAULT SENDMAIL   # path to executable with arguments
+  mailto     = DEFAULT RECIPIENT  # new to log2mail\.rb
+  # awkward, not recommended, but possible:
+  pattern    = DEFAULT PATTERN    # this pattern would be applied to every file
+  mailto     = DEFAULT RECIPIENT for previous DEFAULT PATTERN
+
+# one or more file sections follow
+file = FILENAME
+
+  # each file can have one or more patterns
+  pattern = PATTERN
+
+    # each pattern can have one or more mailto recipients
+    # each recipient gets its own mailto=\.\.\. statement
+    mailto = MAIL
+
+      # every option NOT stated here is supplied from defaults
+      fromaddr   = \.\.\.
+      sendtime   = \.\.\.
+      resendtime = \.\.\.
+      maxlines   = \.\.\.
+      template   = \.\.\.
+      sendmail   = \.\.\.
+
+# "include" includes the contents of file at the exact place of the
+# include statement
+include = PATH TO FILE
+.
+.fi
+.
+.IP "" 0
+.
+.P
+Note that indentation is done for readability purposes only\. It serves no role syntactically\.
+.
+.P
+Splitting the configuration into multiple files is possible, and convenient when using automation tools to distribute settings\. In opposition to classic log2mail, with \fBlog2mail\.rb\fR it does not matter at which place the \fBdefaults\fR section is parsed\. Keep in mind though, that later definitions may override earlier ones\. In that case a warning is logged\.
+.
+.SH "CONFIGURATION (NEW\-STYLE)"
+None (yet)\. More features might warrant a new configuration syntax\.
+.
+.SH "SECURITY CONSIDERATIONS"
+It is neither necessary nor recommended to run this software as root\.
+.
+.SH "BUGS"
+Configuration options \fBsendtime\fR, \fBresendtime\fR, \fBmaxlines\fR not implemented yet\. Every match produces a single mail which is sent out immediately \- which could produce a lot of mails\.
+.
+.SH "HISTORY"
+December 2014: This software is not feature\-complete and in pre\-release testing\.
+.
+.SH "AUTHOR"
+Markus Strauss <\fIlog2mail@dev\.sieb\.mx\fR>
+.
+.SH "THANKS"
+Many thanks to Michael Krax for writing the classic \fBlog2mail\fR in the first place\.
+.
+.SH "SEE ALSO"
+Documentation for the classic log2mail software by Michael Krax:
+.
+.IP "\(bu" 4
+log2mail(8), log2mail\.conf(5)
+.
+.IP "\(bu" 4
+Configuration notice from the Debian project \fIhttps://raw\.githubusercontent\.com/lordlamer/log2mail/e6beb36644ce74639cbc453e664a08ed15f138b9/Configuration\fR
+.
+.IP "" 0
+

@@ -3,7 +3,7 @@ log2mail.rb(1) -- monitors (log) files for patterns and reports hits by mail
 
 ## SYNOPSIS
 
-`log2mail.rb` (start|stop|status|configtest) [<var>options</var>]:
+`log2mail.rb` (start|stop|status|configtest) [<options>]:
 
 ## DESCRIPTION
 
@@ -17,12 +17,12 @@ Log files are reopened automatically when rotated.
 
 ## OPTIONS
 
-  * `--config`=<var>path</var>, `-c` <var>path</var>:
-    Specifies the configuration file or directory path.  If <var>path</var> is a directory, all files (except such ending in `~` or `#`) are parsed in sorted order. Sorting is by character code, i.e. 0-9 before A-Z followed by a-z.
+  * `--config`=<path>, `-c` <path>:
+    Specifies the configuration file or directory path.  If <path> is a directory, all files (except such ending in `~` or `#`) are parsed in sorted order. Sorting is by character code, i.e. 0-9 before A-Z followed by a-z.
     Default value: `/etc/log2mail/conf`.
     This can also be set by environment variable `LOG2MAIL_CONF`.
 
-  * `--sleeptime`=<var>seconds</var>:
+  * `--sleeptime`=<seconds>:
     Specifies at which interval (in seconds) the log files are parsed.  Default value: 60.
 
 ## ENVIRONMENT
@@ -31,7 +31,7 @@ Log files are reopened automatically when rotated.
 
 ## CONFIGURATION (OLD-STYLE)
 
-The old-style configuration syntax is directly cloned from log2mail(8)'s behavior and should be mostly compatible.  It may seem a bit awkward first, but this is how it works:  There are two possible top-level 'sections', `defaults` and `file=`<var>path-to-log-file</var> sections. The only statement allowed after a `file=...` section are one or more `pattern=`<var>pattern</var> entries.  After the `pattern=...` there may be one or more `mailto=`<var>single-mail-recipient</var> entries.  After each `mailto=...` there may be options for that recipient.  Also, these options are set from the special `defaults` section, if present (usually it is).
+The old-style configuration syntax is directly cloned from log2mail(8)'s behavior and should be mostly compatible.  It may seem a bit awkward first, but this is how it works:  There are two possible top-level 'sections', `defaults` and `file=`<path-to-log-file> sections. The only statement allowed after a `file=...` section are one or more `pattern=`<pattern> entries.  After the `pattern=...` there may be one or more `mailto=`<single-mail-recipient> entries.  After each `mailto=...` there may be options for that recipient.  Also, these options are set from the special `defaults` section, if present (usually it is).
 
 The basic layout looks like follows:
 
@@ -106,18 +106,3 @@ Documentation for the classic log2mail software by Michael Krax:
 
   * log2mail(8), log2mail.conf(5)
   * [Configuration notice from the Debian project]( https://raw.githubusercontent.com/lordlamer/log2mail/e6beb36644ce74639cbc453e664a08ed15f138b9/Configuration)
-
-
-[SYNOPSIS]: #SYNOPSIS "SYNOPSIS"
-[DESCRIPTION]: #DESCRIPTION "DESCRIPTION"
-[OPTIONS]: #OPTIONS "OPTIONS"
-[ENVIRONMENT]: #ENVIRONMENT "ENVIRONMENT"
-[SECURITY CONSIDERATIONS]: #SECURITY-CONSIDERATIONS "SECURITY CONSIDERATIONS"
-[BUGS]: #BUGS "BUGS"
-[HISTORY]: #HISTORY "HISTORY"
-[AUTHOR]: #AUTHOR "AUTHOR"
-[THANKS]: #THANKS "THANKS"
-[SEE ALSO]: #SEE-ALSO "SEE ALSO"
-
-
-[log2mail.rb(1)]: log2mail.1.html
