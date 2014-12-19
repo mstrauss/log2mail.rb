@@ -99,6 +99,7 @@ RSpec.configure do |config|
     # stub_const('Log2mail::Logger', spy('Logger') )
     $logger = spy('Logger')
     Mail::TestMailer.deliveries.clear
+    FactoryGirl.reload
   end
 
 

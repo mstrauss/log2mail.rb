@@ -32,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'gem-man', '~> 0.3', '>= 0.3.0'
   spec.add_runtime_dependency 'main', '~> 6.1.0'
   spec.add_runtime_dependency 'terminal-table'
+  spec.add_runtime_dependency 'parslet'
 end

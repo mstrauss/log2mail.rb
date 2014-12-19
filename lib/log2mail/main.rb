@@ -81,7 +81,7 @@ Main {
     option('maxbufsize') { argument_required; cast :int; default 65536 }
     def run
       fail "Not starting. Daemon running." if daemon_running? and !params['nofork'].value
-      config = Log2mail::Config.parse_config @config_path
+      config = Log2mail::Config::ConfigFileHandler.parse_config @config_path
       unless params['nofork'].value
         Process.daemon
         $PROGRAM_NAME = Log2mail::PROGNAME
@@ -133,7 +133,7 @@ Main {
   mode 'configtest' do
     option('effective', 'e') { description 'show effective settings' }
     def run
-      config = Log2mail::Config.parse_config @config_path
+      config = Log2mail::Config::ConfigFileHandler.parse_config @config_path
       puts config.formatted(params['effective'].value)
     end
   end

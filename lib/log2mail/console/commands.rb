@@ -42,7 +42,7 @@ module Log2mail
     desc "show configuration"
     def config
       config_path = ask('configuration path? ').chomp
-      config = Log2mail::Config.parse_config config_path
+      config = Log2mail::Config::ConfigFileHandler.parse_config config_path
       puts "Defaults:"
       puts config.defaults
       puts "Settings:"

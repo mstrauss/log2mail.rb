@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'tempfile'
 
-module Log2mail
+module Log2mail::Config
 
-  describe Config do
+  describe ConfigFileHandler do
 
     subject { build(:valid_config) }
 
@@ -24,7 +24,7 @@ module Log2mail
             :template   => "/tmp/mail_template",
             :fromaddr   => "log2mail",
             :sendmail   => "/usr/sbin/sendmail -oi -t",
-            :mailtos    => ["global_default_recipient@example.org"],
+            :mailtos    => {"global_default_recipient@example.org"=>{}},
           })
           expect(subject.patterns_for_file('test.log')).to eql(["/any/", "string match"])
           expect(subject.mailtos_for_pattern('test.log', 'string match')).to eql(["special@recipient"])
@@ -43,6 +43,22 @@ module Log2mail
         end
         it 'should log warning when no recipients' do
           expect($logger).to receive(:warn).with(/Pattern.*has no recipients/)
+          subject
+        end
+      end
+
+      context 'with defaults with attributes after a global mailto' do
+        subject { build(:valid_config_with_defaults_with_global_mailto_attributes) }
+        it 'should log a warning' do
+          expect($logger).to receive(:warn).with(/Attributes for a global default recipient specified/)
+          subject
+        end
+      end
+
+      context 'with defaults with attributes after a global pattern' do
+        subject { build(:valid_config_with_defaults_with_global_pattern_attributes) }
+        it 'should log a warning' do
+          expect($logger).to receive(:warn).with(/Attributes for a global default pattern specified/)
           subject
         end
       end
@@ -95,6 +111,36 @@ module Log2mail
           :fromaddr   => "log2mail",
           :sendmail   => "/usr/sbin/sendmail -oi -t",
         })
+      end
+    end
+
+    describe '#raw.join' do
+      it 'should return the original cat-together config files' do
+        expect(subject.raw.join).to eql(<<-EOF)
+# sample config file for log2mail
+# comments start with '#'
+# see source code doc/Configuration for additional information
+
+defaults
+  sendtime   = 20
+  resendtime = 50
+  maxlines   = 7
+  template   = /tmp/mail_template
+  fromaddr   = log2mail
+  sendmail   = /usr/sbin/sendmail -oi -t
+  mailto     = global_default_recipient@example.org  # new in log2mail.rb
+file = test.log
+  pattern = /any/
+  pattern = string match
+    mailto = special@recipient
+      maxlines = 99
+        EOF
+      end
+    end
+
+    describe '#formatted' do
+      it 'should return a formatted output of the configuration' do
+        expect( subject.formatted ).to be_instance_of(Terminal::Table)
       end
     end
 

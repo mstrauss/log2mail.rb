@@ -9,7 +9,7 @@ module Log2mail
     # end
 
     def initialize( config, sleeptime )
-      fail Error, 'Invalid configuration.' unless config.instance_of?(Log2mail::Config)
+      fail Error, 'Invalid configuration.' unless config.instance_of?(Config::ConfigFileHandler)
       @file_patterns = config.file_patterns
       @files = @file_patterns.keys.map {|f| Log2mail::File.new(f, @file_patterns[f] ) }
       @sleeptime = sleeptime

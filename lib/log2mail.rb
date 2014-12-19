@@ -1,5 +1,5 @@
 %w{ main mail terminal-table }.each {|r| require r}
-%w{ kernel string main }.each {|r| require_relative "ext/#{r}"}
+%w{ kernel string symbol main }.each {|r| require_relative "ext/#{r}"}
 begin
   require 'syslog/logger'
 rescue LoadError

@@ -20,4 +20,10 @@ class String
       rxp
     end
   end
+
+  def pluralize
+    return self if self.to_s[-1] == 's'
+    (self.to_s + 's')
+  end
+
 end

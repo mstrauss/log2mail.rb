@@ -1,51 +1,101 @@
 require 'tempfile'
 
 FactoryGirl.define do
-  factory :config, class: Log2mail::Config do
 
+  factory :raw_config, class: String do
     trait :valid do
-      initialize_with do
-        tmp = Tempfile.new('valid_config')
-        tmp.write <<-CONFIG
-          # sample config file for log2mail
-          # comments start with '#'
-          # see source code doc/Configuration for additional information
+      initialize_with{ new <<-CONFIG }
+# sample config file for log2mail
+# comments start with '#'
+# see source code doc/Configuration for additional information
 
-          defaults
-            sendtime   = 20
-            resendtime = 50
-            maxlines   = 7
-            template   = /tmp/mail_template
-            fromaddr   = log2mail
-            sendmail   = /usr/sbin/sendmail -oi -t
-            mailto     = global_default_recipient@example.org  # new in log2mail.rb
-          file = test.log
-            pattern = /any/
-            pattern = string match
-              mailto = special@recipient
-                maxlines = 99
-        CONFIG
-        tmp.close
-        new(tmp.path)
-      end
+defaults
+  sendtime   = 20
+  resendtime = 50
+  maxlines   = 7
+  template   = /tmp/mail_template
+  fromaddr   = log2mail
+  sendmail   = /usr/sbin/sendmail -oi -t
+  mailto     = global_default_recipient@example.org  # new in log2mail.rb
+file = test.log
+  pattern = /any/
+  pattern = string match
+    mailto = special@recipient
+      maxlines = 99
+      CONFIG
     end
 
     trait :valid_without_defaults do
+      initialize_with{ new <<-CONFIG }
+file = test.log
+  pattern = /any/
+  pattern = string match
+    mailto = special@recipient
+      CONFIG
+    end
+
+    trait :valid_global_mailto_attributes do
+      initialize_with{ new <<-CONFIG }
+defaults
+  mailto   = recipient@test.itstrauss.eu
+  fromaddr = log2mail
+file = test.log
+  pattern = string pattern
+  pattern = /regexp pattern/
+      CONFIG
+    end
+
+    trait :valid_global_pattern_attributes do
+      initialize_with{ new <<-CONFIG }
+defaults
+  pattern = recipient@test.itstrauss.eu
+  mailto  = special recipient for pattern
+file = test.log
+      CONFIG
+    end
+
+    factory :valid_raw_config, traits: [:valid]
+    factory :valid_raw_config_without_defaults, traits: [:valid_without_defaults]
+    factory :valid_raw_config_with_defaults_with_global_mailto_attributes, traits: [:valid_global_mailto_attributes]
+    factory :valid_raw_config_with_defaults_with_global_pattern_attributes, traits: [:valid_global_pattern_attributes]
+  end
+
+  factory :config, class: Log2mail::Config::ConfigFileHandler do
+
+    factory :valid_config do
       initialize_with do
         tmp = Tempfile.new('valid_config')
-        tmp.write <<-CONFIG
-          file = test.log
-            pattern = /any/
-            pattern = string match
-              mailto = special@recipient
-        CONFIG
+        tmp.write build(:valid_raw_config)
         tmp.close
         new(tmp.path)
       end
     end
 
-    factory :valid_config, traits: [:valid]
-    factory :valid_config_without_defaults, traits: [:valid_without_defaults]
+    factory :valid_config_without_defaults do
+      initialize_with do
+        tmp = Tempfile.new('valid_config')
+        tmp.write build(:valid_raw_config_without_defaults)
+        tmp.close
+        new(tmp.path)
+      end
+    end
+    factory :valid_config_with_defaults_with_global_mailto_attributes do
+      initialize_with do
+        tmp = Tempfile.new('valid_config')
+        tmp.write build(:valid_raw_config_with_defaults_with_global_mailto_attributes)
+        tmp.close
+        new(tmp.path)
+      end
+    end
+    factory :valid_config_with_defaults_with_global_pattern_attributes do
+      initialize_with do
+        tmp = Tempfile.new('valid_config')
+        tmp.write build(:valid_raw_config_with_defaults_with_global_pattern_attributes)
+        tmp.close
+        new(tmp.path)
+      end
+    end
+
   end
 
   factory :hit, class: Log2mail::Hit do
@@ -96,6 +146,53 @@ culpa qui officia deserunt mollit anim id est laborum.
       tmp.close
       new( tmp.path, ['ut'] )
     end
+  end
+
+  sequence :snippet do |n|
+    <<-TEXT
+# this is file file#{n}
+file = file#{n}
+  pattern = for file#{n}
+    mailto = for pattern for file#{n}
+    TEXT
+  end
+
+  sequence :filename do |n|
+    "config file #{n}"
+  end
+
+
+  factory :defaults_snippet, class: Log2mail::Config::ConfigFileSnippet do
+    filename = '/config/defaults'
+    snippet = <<-TEXT
+# comment
+defaults
+mailto = global_default_recipient@example.org
+    TEXT
+    initialize_with do
+      new(snippet, filename)
+    end
+  end
+
+  factory :just_comments_snippet, class: Log2mail::Config::ConfigFileSnippet do
+    filename = '/config/comments'
+    snippet = <<-TEXT
+# comment
+# other comment
+# even more important comment
+    TEXT
+    initialize_with do
+      new(snippet, filename)
+    end
+  end
+
+  factory :config_file_snippet, class: Log2mail::Config::ConfigFileSnippet do
+    snippet
+    filename
+    initialize_with do
+      new(snippet, filename)
+    end
+
   end
 
 end
